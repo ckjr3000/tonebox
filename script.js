@@ -9,6 +9,7 @@ createOsc.addEventListener('click', () => {
     let osc;
     let gain = ctx.createGain();
     let muted = false;
+    let waveShaper = ctx.createWaveShaper();
 
     const startBtn = document.getElementById('start-btn');
 
@@ -23,6 +24,7 @@ createOsc.addEventListener('click', () => {
     const gainCtrl = document.getElementById('gain-ctrl');
     const waveTypeSelect = document.getElementById('wave-type-select');
     const freqCtrl = document.getElementById('frequency-ctrl');
+    const distortionCtrl = document.getElementById('distortion-ctrl');
 
     startBtn.addEventListener('click', () => {
         startBtn.setAttribute('disabled', 'disabled');
@@ -45,8 +47,11 @@ createOsc.addEventListener('click', () => {
         osc.frequency.setValueAtTime(freqVal, ctx.currentTime);
 
         // signal chain
-        osc.connect(gain);
+        osc.connect(waveShaper);
+        waveShaper.connect(gain)
         gain.connect(ctx.destination);
+
+        // start
         osc.start();
     });
 
@@ -103,10 +108,26 @@ createOsc.addEventListener('click', () => {
         let freqVal = e.target.value;
         osc.frequency.linearRampToValueAtTime(freqVal, ctx.currentTime + 0.05);
     })
+
+
+    distortionCtrl.addEventListener('change', (e) => {
+        let level = e.target.value;
+        waveShaper.curve = calculateCurve(level);
+    })
 })
 
-function getCurrentGainValue(){
-    
+function calculateCurve(level){
+    const amount = parseFloat(level);
+    let k = amount;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+
+    for(let i = 0; i < n_samples; i++){
+            let x = i * 2 / n_samples - 1;
+            curve[i] = ( Math.PI + k ) * x * (1/6) / ( Math.PI + k * Math.abs(x));
+        }
+    console.log(curve);
+    return curve;
 }
 
 // reset all form values on page load
