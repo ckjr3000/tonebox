@@ -12,13 +12,14 @@
 </head>
 <body>
     <button id="create-osc">create osc</button>
-    <div id="osc-channel" class="hidden">
+    <form id="osc-channel" class="hidden">
         <button id="start-btn">start</button>
         <button id="stop-btn">stop</button>
         <button id="mute-btn">mute</button>
+        <button id="unmute-btn" class="hidden">unmute</button>
         <div class="gain">
             <label for="gain">Gain:</label>
-            <input name="gain" id="gain-ctrl" type="range" min="0" max="1" step="any" value="0">
+            <input name="gain" id="gain-ctrl" type="range" min="0" max="1" step="any" value="0.5">
         </div>
         <div class="wave-type">
             <label for="wave-type">Wave Type:</label>
@@ -39,7 +40,7 @@
         <div class="oscilloscope">
             oscilloscope tbc
         </div>
-    </div>
+    </form>
     <script src="./script.js"></script>
 </body>
 </html>
