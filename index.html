@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tone Box</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button id="create-osc">create osc</button>
+    <div id="osc-channel" class="hidden">
+        <button id="start-btn">start</button>
+        <button id="stop-btn">stop</button>
+        <button id="mute-btn">mute</button>
+        <div class="gain">
+            <label for="gain">Gain:</label>
+            <input name="gain" id="gain-ctrl" type="range" min="0" max="1" step="any" value="0">
+        </div>
+        <div class="wave-type">
+            <label for="wave-type">Wave Type:</label>
+            <select name="wave-type" id="wave-type-select">
+                <option value="sine">Sine</option>
+                <option value="square">Square</option>
+                <option value="triangle">Triangle</option>
+                <option value="sawtooth">Sawtooth</option>
+            </select>
+        </div>
+        <div class="frequency">
+            <label for="frequency">Frequency</label>
+            <input name="frequency" id="frequency-ctrl" type="range" min="50" max="1000" step="any" value="250">
+        </div>
+        <div class="wave-shaper">
+            waveshaper tbc
+        </div>
+        <div class="oscilloscope">
+            oscilloscope tbc
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>
