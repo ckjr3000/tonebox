@@ -7,7 +7,7 @@ createOsc.addEventListener('click', () => {
     createOsc.classList.add('hidden');
     oscChannel.classList.remove('hidden');
     let osc;
-    let gain = ctx.createGain();
+    let gain;
     let muted = false;
     let scDistortion = ctx.createWaveShaper();
     let cubicDistortion = ctx.createWaveShaper();
@@ -29,32 +29,41 @@ createOsc.addEventListener('click', () => {
     const scDistortionCtrl = document.getElementById('sc-distortion-ctrl');
     const cubicDistortionCtrl = document.getElementById('cubic-distortion-ctrl');
 
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    const tapBtn = document.getElementById('tap-btn');
+
+    function createOscillator(){
+         // create new oscillator every time start is clicked because an oscillator instance can only be started once
+         osc = ctx.createOscillator(); 
+         gain = ctx.createGain();
+
+         gain.gain.setValueAtTime(0, ctx.currentTime);
+         // set gain to current value on gain input element
+         if(!muted){
+             let gainVal = gainCtrl.value;
+             gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.5);
+         }
+ 
+         let waveShape = waveTypeSelect.value;
+         osc.type = waveShape;
+ 
+         let freqVal = freqSelect.value;
+         osc.frequency.setValueAtTime(freqVal, ctx.currentTime);
+ 
+         // signal chain
+         osc.connect(scDistortion);
+         scDistortion.connect(cubicDistortion);
+         cubicDistortion.connect(gain);
+         gain.connect(ctx.destination);
+ 
+    }
+
     startBtn.addEventListener('click', () => {
         startBtn.setAttribute('disabled', 'disabled');
         stopBtn.removeAttribute('disabled');
         muteBtn.removeAttribute('disabled');
 
-        // create new oscillator every time start is clicked because an oscillator instance can only be started once
-        osc = ctx.createOscillator(); 
-
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        // set gain to current value on gain input element
-        if(!muted){
-            let gainVal = gainCtrl.value;
-            gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.5);
-        }
-
-        let waveShape = waveTypeSelect.value;
-        osc.type = waveShape;
-
-        let freqVal = freqSelect.value;
-        osc.frequency.setValueAtTime(freqVal, ctx.currentTime);
-
-        // signal chain
-        osc.connect(scDistortion);
-        scDistortion.connect(cubicDistortion);
-        cubicDistortion.connect(gain);
-        gain.connect(ctx.destination);
+        createOscillator();
 
         // start
         osc.start();
@@ -86,11 +95,43 @@ createOsc.addEventListener('click', () => {
         muted = false;
 
         let gainVal = gainCtrl.value;
-        gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.05);
+        gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.5);
 
         muteBtn.classList.remove('hidden');
         unMuteBtn.classList.add('hidden');
     });
+
+    modeRadios.forEach((radio) => {
+        radio.addEventListener('change', handleModeChange);
+    })
+
+    function handleModeChange(e){
+        let mode = e.target.value;
+
+        if (mode === "continuous") {
+            tapBtn.classList.add('hidden');
+            startBtn.removeAttribute('disabled');
+            stopBtn.removeAttribute('disabled');
+            muteBtn.removeAttribute('disabled');
+            unMuteBtn.removeAttribute('disabled');
+        } else if (mode === "tap") {
+            if(osc){
+                osc.stop();
+            }
+            tapBtn.classList.remove('hidden');
+            startBtn.setAttribute('disabled', 'disabled');
+            stopBtn.setAttribute('disabled', 'disabled');
+            muteBtn.setAttribute('disabled', 'disabled');
+            unMuteBtn.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    tapBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        createOscillator();
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+    })
 
     gainCtrl.addEventListener('input', (e) => {
         let gainVal = e.target.value;
@@ -114,7 +155,6 @@ createOsc.addEventListener('click', () => {
         let freqVal = e.target.value;
         osc.frequency.linearRampToValueAtTime(freqVal, ctx.currentTime + 0.05);
     })
-
 
     scDistortionCtrl.addEventListener('input', (e) => {
         let level = e.target.value;

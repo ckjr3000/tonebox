@@ -23,6 +23,7 @@
             <input name="mode" type="radio" value="continuous" checked>
             <label for="tap">Tap</label>
             <input name="mode" type="radio" value="tap">
+            <button id="tap-btn" class="hidden">Tap</button>
         </div>
         <div class="gain">
             <label for="gain">Gain:</label>
@@ -62,9 +63,6 @@
             <label for="cubic-distortion-level">Cubic Distortion:</label>
             <input id="cubic-distortion-ctrl" type="range" min="0" max="100" step="any" value="0">
         </div>
-
-        <button id="reset-values">Reset Values</button>
-        <button id="add-lfo">Add LFO</button>
     </form>
     <script src="./script.js"></script>
 </body>
