@@ -11,16 +11,22 @@
     </style>
 </head>
 <body>
+
     <button id="create-osc">create osc</button>
     <form id="osc-channel" class="hidden">
         <button id="start-btn">start</button>
         <button id="stop-btn">stop</button>
         <button id="mute-btn">mute</button>
         <button id="unmute-btn" class="hidden">unmute</button>
-        
+        <div id="mode">
+            <label for="continuous">Continuous</label>
+            <input name="mode" type="radio" value="continuous" checked>
+            <label for="tap">Tap</label>
+            <input name="mode" type="radio" value="tap">
+        </div>
         <div class="gain">
             <label for="gain">Gain:</label>
-            <input name="gain" id="gain-ctrl" type="range" min="0" max="1" step="any" value="0.5">
+            <input name="gain" id="gain-ctrl" type="range" min="0" max="1" step="0.01" value="0.5">
         </div>
         
         <div class="wave-type">
@@ -35,17 +41,30 @@
 
         <div class="frequency">
             <label for="frequency">Frequency:</label>
-            <input name="frequency" id="frequency-ctrl" type="range" min="50" max="20000" step="any" value="10000">
+            <select name="frequency" id="frequency-select">
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="400">400</option>
+                <option value="800">800</option>
+                <option value="1600">1600</option>
+                <option value="3200">3200</option>
+                <option value="6400">6400</option>
+                <option value="12800">12800</option>
+                <option value="12800">20000</option>
+            </select>
         </div>
 
         <div class="distortion">
-            <label for="distortion-level">Distortion:</label>
-            <input id="distortion-ctrl" type="range" min="0" max="50" step="any" value="0">
+            <label for="sc-distortion-level">Soft Clipping Distortion:</label>
+            <input id="sc-distortion-ctrl" type="range" min="0" max="100" step="any" value="0">
+
+            <label for="cubic-distortion-level">Cubic Distortion:</label>
+            <input id="cubic-distortion-ctrl" type="range" min="0" max="100" step="any" value="0">
         </div>
 
-        <div class="oscilloscope">
-            oscilloscope tbc
-        </div>
+        <button id="reset-values">Reset Values</button>
+        <button id="add-lfo">Add LFO</button>
     </form>
     <script src="./script.js"></script>
 </body>
