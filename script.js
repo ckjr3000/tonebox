@@ -46,12 +46,11 @@ createOsc.addEventListener('click', () => {
  
          let waveShape = waveTypeSelect.value;
          osc.type = waveShape;
- 
          let freqVal = freqSelect.value;
          osc.frequency.setValueAtTime(freqVal, ctx.currentTime);
  
          // signal chain
-         osc.connect(scDistortion);
+         osc.connect(gain);
          scDistortion.connect(cubicDistortion);
          cubicDistortion.connect(gain);
          gain.connect(ctx.destination);
@@ -83,7 +82,9 @@ createOsc.addEventListener('click', () => {
 
         muted = true;
 
-        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+        gain.gain.cancelAndHoldAtTime(ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + (60 * 60 * 24 * 365 * 100));
 
         muteBtn.classList.add('hidden');
         unMuteBtn.classList.remove('hidden');
@@ -93,8 +94,8 @@ createOsc.addEventListener('click', () => {
         e.preventDefault();
         
         muted = false;
-
         let gainVal = gainCtrl.value;
+
         gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.5);
 
         muteBtn.classList.remove('hidden');
@@ -133,10 +134,22 @@ createOsc.addEventListener('click', () => {
         osc.stop(ctx.currentTime + 0.1);
     })
 
+ 
+    /*
+        GAIN CLICKING WORKAROUND
+        1. Cancel all scheduled automation at current time (scheduled automation = any previous ramp) and hold the val the automation
+           was at when cancelled
+        2. normal ramp from current To new value
+        3. 100 years ramp prevents gain value from reverting to a default 'previous' state because it is effectively alway mid-automation from 
+           this point
+        ISSUE - Firefox does not support cancelAndHoldAtTime 
+    */
     gainCtrl.addEventListener('input', (e) => {
         let gainVal = e.target.value;
         if(!muted){
-            gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.5);
+            gain.gain.cancelAndHoldAtTime(ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + 0.05);
+            gain.gain.linearRampToValueAtTime(gainVal, ctx.currentTime + (60 * 60 * 24 * 365 * 100));
         }
         
         if(gainVal == 0){
