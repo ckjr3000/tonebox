@@ -9,8 +9,6 @@ createOsc.addEventListener('click', () => {
     let osc;
     let gain;
     let muted = false;
-    let scDistortion = ctx.createWaveShaper();
-    let cubicDistortion = ctx.createWaveShaper();
 
     const startBtn = document.getElementById('start-btn');
 
@@ -51,8 +49,6 @@ createOsc.addEventListener('click', () => {
  
          // signal chain
          osc.connect(gain);
-         scDistortion.connect(cubicDistortion);
-         cubicDistortion.connect(gain);
          gain.connect(ctx.destination);
  
     }
@@ -190,44 +186,7 @@ createOsc.addEventListener('click', () => {
         let freqVal = e.target.value;
         osc.frequency.linearRampToValueAtTime(freqVal, ctx.currentTime + 0.05);
     })
-
-    scDistortionCtrl.addEventListener('input', (e) => {
-        let level = e.target.value;
-        scDistortion.curve = calculateSoftClippingCurve(level);
-    })
-
-    cubicDistortionCtrl.addEventListener('input', (e) => {
-        let level = e.target.value;
-        cubicDistortion.curve = calculateCubicDistortionCurve(level);
-    })
 })
-
-function calculateSoftClippingCurve(level){
-    const amount = parseFloat(level);
-    let k = amount;
-    const n_samples = 44100;
-    const curve = new Float32Array(n_samples);
-
-    for(let i = 0; i < n_samples; i++){
-            let x = i * 2 / n_samples - 1;
-            curve[i] = ( Math.PI + k ) * x * (1/6) / ( Math.PI + k * Math.abs(x));
-        }
-    return curve;
-}
-
-function calculateCubicDistortionCurve(level) {
-    const amount = parseFloat(level);
-    const n_samples = 44100;
-    const curve = new Float32Array(n_samples);
-    const factor = amount;
-
-    for (let i = 0; i < n_samples; i++) {
-        const x = (i * 2 / n_samples) - 1; 
-        curve[i] = x - factor * Math.pow(x, 3); 
-    } 
-
-    return curve;
-}
 
 // reset all form values on page load
 window.onload = function(){
