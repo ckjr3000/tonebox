@@ -12,9 +12,6 @@ createOsc.addEventListener('click', () => {
 
     const startBtn = document.getElementById('start-btn');
 
-    const stopBtn = document.getElementById('stop-btn');
-    stopBtn.setAttribute('disabled', 'disabled');
-
     const muteBtn = document.getElementById('mute-btn');
     muteBtn.setAttribute('disabled', 'disabled');
 
@@ -23,9 +20,6 @@ createOsc.addEventListener('click', () => {
     const gainCtrl = document.getElementById('gain-ctrl');
     const waveTypeSelect = document.getElementById('wave-type-select');
     const freqSelect = document.getElementById('frequency-select');
-
-    const scDistortionCtrl = document.getElementById('sc-distortion-ctrl');
-    const cubicDistortionCtrl = document.getElementById('cubic-distortion-ctrl');
 
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const tapBtn = document.getElementById('tap-btn');
@@ -55,22 +49,12 @@ createOsc.addEventListener('click', () => {
 
     startBtn.addEventListener('click', () => {
         startBtn.setAttribute('disabled', 'disabled');
-        stopBtn.removeAttribute('disabled');
         muteBtn.removeAttribute('disabled');
 
         createOscillator();
 
         // start
         osc.start();
-    });
-
-    stopBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        stopBtn.setAttribute('disabled', 'disabled');
-        startBtn.removeAttribute('disabled');
-
-        osc.stop();
     });
 
     muteBtn.addEventListener('click', (e) => {
@@ -108,7 +92,6 @@ createOsc.addEventListener('click', () => {
         if (mode === "continuous") {
             tapBtn.classList.add('hidden');
             startBtn.removeAttribute('disabled');
-            stopBtn.removeAttribute('disabled');
             muteBtn.removeAttribute('disabled');
             unMuteBtn.removeAttribute('disabled');
         } else if (mode === "tap") {
@@ -117,7 +100,6 @@ createOsc.addEventListener('click', () => {
             }
             tapBtn.classList.remove('hidden');
             startBtn.setAttribute('disabled', 'disabled');
-            stopBtn.setAttribute('disabled', 'disabled');
             muteBtn.setAttribute('disabled', 'disabled');
             unMuteBtn.setAttribute('disabled', 'disabled');
         }
