@@ -19,10 +19,7 @@ createOsc.addEventListener('click', () => {
 
     const gainCtrl = document.getElementById('gain-ctrl');
     const waveTypeSelect = document.getElementById('wave-type-select');
-    const freqSelect = document.getElementById('frequency-select');
-
-    const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const tapBtn = document.getElementById('tap-btn');
+    const freqCtrl = document.getElementById('frequency-ctrl');
 
     function createOscillator(){
          // create new oscillator every time start is clicked because an oscillator instance can only be started once
@@ -38,7 +35,7 @@ createOsc.addEventListener('click', () => {
  
          let waveShape = waveTypeSelect.value;
          osc.type = waveShape;
-         let freqVal = freqSelect.value;
+         let freqVal = freqCtrl.value;
          osc.frequency.setValueAtTime(freqVal, ctx.currentTime);
  
          // signal chain
@@ -82,37 +79,6 @@ createOsc.addEventListener('click', () => {
         unMuteBtn.classList.add('hidden');
     });
 
-    modeRadios.forEach((radio) => {
-        radio.addEventListener('change', handleModeChange);
-    })
-
-    function handleModeChange(e){
-        let mode = e.target.value;
-
-        if (mode === "continuous") {
-            tapBtn.classList.add('hidden');
-            startBtn.removeAttribute('disabled');
-            muteBtn.removeAttribute('disabled');
-            unMuteBtn.removeAttribute('disabled');
-        } else if (mode === "tap") {
-            if(osc){
-                osc.stop();
-            }
-            tapBtn.classList.remove('hidden');
-            startBtn.setAttribute('disabled', 'disabled');
-            muteBtn.setAttribute('disabled', 'disabled');
-            unMuteBtn.setAttribute('disabled', 'disabled');
-        }
-    }
-
-    tapBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        createOscillator();
-        osc.start();
-        osc.stop(ctx.currentTime + 0.1);
-    })
-
- 
     /*
         GAIN CLICKING WORKAROUND 1
         1. Cancel all scheduled automation at current time (scheduled automation = any previous ramp) and hold the val the automation
@@ -145,6 +111,7 @@ createOsc.addEventListener('click', () => {
 
         ISSUE - Also doesn't work on firefox, not sure why
     */
+   
     gainCtrl.addEventListener('input', (e) => {
         let gainVal = e.target.value;
         if(!muted){
@@ -164,7 +131,7 @@ createOsc.addEventListener('click', () => {
         osc.type = shape;
     });
 
-    freqSelect.addEventListener('change', (e) => {
+    freqCtrl.addEventListener('input', (e) => {
         let freqVal = e.target.value;
         osc.frequency.linearRampToValueAtTime(freqVal, ctx.currentTime + 0.05);
     })

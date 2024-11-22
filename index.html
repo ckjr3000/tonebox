@@ -20,7 +20,6 @@
         <div id="mode">
             <label for="continuous">Continuous</label>
             <input name="mode" type="radio" value="continuous" checked>
-            <label for="tap">Tap</label>
             <input name="mode" type="radio" value="tap">
             <button id="tap-btn" class="hidden">Tap</button>
         </div>
@@ -41,18 +40,7 @@
 
         <div class="frequency">
             <label for="frequency">Frequency:</label>
-            <select name="frequency" id="frequency-select">
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="400">400</option>
-                <option value="800">800</option>
-                <option value="1600">1600</option>
-                <option value="3200">3200</option>
-                <option value="6400">6400</option>
-                <option value="12800">12800</option>
-                <option value="12800">20000</option>
-            </select>
+            <input name="frequency" id="frequency-ctrl" type="range" min="45" max="100" step="0.01" >
         </div>
     </form>
     <script src="./script.js"></script>
